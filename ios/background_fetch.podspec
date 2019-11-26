@@ -3,19 +3,21 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'background_fetch'
-  s.version          = '0.1.1'
+  s.version          = '0.1.0'
   s.summary          = 'Periodic callbacks in the background for both IOS and Android.'
   s.description      = <<-DESC
-Periodic callbacks in the background for both IOS and Android.
-                       DESC
-  s.homepage         = 'https://github.com/transistorsoft/flutter_background_fetch'
+  Periodic callbacks in the background for both IOS and Android.
+DESC
+  s.homepage         = 'https://github.com/open-xchange/flutter_background_fetch'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Transistor Software' => 'info@transistorsoft.com' }
+  s.author           = { 'Open-Xchange GmbH' => 'info@open-xchange.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files     = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
+  
   s.dependency 'Flutter'
-  s.vendored_frameworks = ['TSBackgroundFetch.framework']
-  s.ios.deployment_target = '8.0'
+  s.dependency 'SwiftyBeaver'
+
+  s.ios.deployment_target = '13.0'
 end
 
