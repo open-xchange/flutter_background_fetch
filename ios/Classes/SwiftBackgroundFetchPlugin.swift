@@ -47,11 +47,25 @@ let log = SwiftyBeaver.self
 
 public class SwiftBackgroundFetchPlugin: NSObject, FlutterPlugin {
     
-    fileprivate let registrar: FlutterPluginRegistrar!
+    private let registrar: FlutterPluginRegistrar!
     
-    fileprivate static let PLUGIN_PATH = "com.transistorsoft/flutter_background_fetch"
-    fileprivate static let METHOD_CHANNEL_NAME = "methods"
-    fileprivate static let EVENT_CHANNEL_NAME = "events"
+    private struct BGTask {
+        
+        struct Identifier {
+            static let Fetch = "me.coi.bgtask.fetch"
+            static let Notification = "me.coi.bgtask.remote-notification"
+            static let Processing = "me.coi.bgtask.processing"
+        }
+        
+        struct Argument {
+            static let StartOnBoot = "startOnBoot"
+            static let MinimumFetchInterval = "minimumFetchInterval"
+        }
+    }
+    
+    private static let PLUGIN_PATH = "com.transistorsoft/flutter_background_fetch"
+    private static let METHOD_CHANNEL_NAME = "methods"
+    private static let EVENT_CHANNEL_NAME = "events"
     
     let ACTION_CONFIGURE = "configure"
     let ACTION_START = "start"
@@ -67,6 +81,8 @@ public class SwiftBackgroundFetchPlugin: NSObject, FlutterPlugin {
     }
     
     public static func register(with registrar: FlutterPluginRegistrar) {
+        SwiftBackgroundFetchPlugin.setupLogging()
+
         let channel = FlutterMethodChannel(name: "\(PLUGIN_PATH)/\(METHOD_CHANNEL_NAME)", binaryMessenger: registrar.messenger())
         let delegate = SwiftBackgroundFetchPlugin(registrar: registrar)
         registrar.addMethodCallDelegate(delegate, channel: channel)
@@ -76,6 +92,9 @@ public class SwiftBackgroundFetchPlugin: NSObject, FlutterPlugin {
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         log.info("Received Flutter Method Call: \(call.method)")
+        if let arguments = call.arguments as? [String: Any?] {
+            log.info("arguments: \(arguments)")
+        }
 
         switch call.method {
             case ACTION_CONFIGURE:
@@ -99,9 +118,17 @@ public class SwiftBackgroundFetchPlugin: NSObject, FlutterPlugin {
     
     // MARK: - Handle Method Calls
     
-    fileprivate func configure(call: FlutterMethodCall, result: FlutterResult) {
-        if let arguments = call.arguments as? [String: Any?] {
-            log.debug("arguments: \(arguments)")
-        }
+    private func configure(call: FlutterMethodCall, result: FlutterResult) {
+    }
+    
+    // MARK: - Logging
+
+    private class func setupLogging() {
+        // https://docs.swiftybeaver.com/article/20-custom-format
+        let console = ConsoleDestination()
+        console.format = "$Dyyyy-MM-dd HH:mm:ss $N.$F:$l [$L] $M"
+        log.addDestination(console)
+
+        log.debug("Logging Setup: done")
     }
 }
